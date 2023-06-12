@@ -4,6 +4,7 @@
 
 import 'dart:math';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:reorderables/reorderables.dart';
@@ -46,6 +47,7 @@ class ReorderableWrap extends StatefulWidget {
     this.buildItemsContainer,
     this.buildDraggableFeedback,
     this.needsLongPressDraggable = true,
+    this.longPressDraggableDelay,
     this.alignment = WrapAlignment.start,
     this.spacing = 0.0,
     this.runAlignment = WrapAlignment.start,
@@ -69,6 +71,7 @@ class ReorderableWrap extends StatefulWidget {
 //        ),
         super(key: key);
 
+  final Duration? longPressDraggableDelay;
   /// A non-reorderable header widget to show before the list.
   ///
   /// If null, no header will appear before the list.
@@ -290,6 +293,7 @@ class _ReorderableWrapState extends State<ReorderableWrap> {
           buildItemsContainer: widget.buildItemsContainer,
           buildDraggableFeedback: widget.buildDraggableFeedback,
           needsLongPressDraggable: widget.needsLongPressDraggable,
+          longPressDraggableDelay: widget.longPressDraggableDelay,
           alignment: widget.alignment,
           spacing: widget.spacing,
           runAlignment: widget.runAlignment,
@@ -345,6 +349,7 @@ class _ReorderableWrapContent extends StatefulWidget {
     required this.verticalDirection,
     required this.minMainAxisCount,
     required this.maxMainAxisCount,
+    this.longPressDraggableDelay,
     this.header,
     this.footer,
     this.controller,
@@ -352,7 +357,7 @@ class _ReorderableWrapContent extends StatefulWidget {
     this.scrollAnimationDuration = const Duration(milliseconds: 200),
     required this.enableReorder
   });
-  
+
   final List<Widget>? header;
   final Widget? footer;
   final ScrollController? controller;
@@ -367,6 +372,7 @@ class _ReorderableWrapContent extends StatefulWidget {
   final BuildItemsContainer? buildItemsContainer;
   final BuildDraggableFeedback? buildDraggableFeedback;
   final bool needsLongPressDraggable;
+  final Duration? longPressDraggableDelay;
 
   final WrapAlignment alignment;
   final double spacing;
@@ -832,6 +838,7 @@ class _ReorderableWrapContentState extends State<_ReorderableWrapContent>
                 data: index,
                 //toWrap.key,
                 ignoringFeedbackSemantics: false,
+                delay: this.widget.longPressDraggableDelay ?? kLongPressTimeout,
                 feedback: feedbackBuilder,
                 // Wrap toWrapWithSemantics with a widget that supports HitTestBehavior
                 // to make sure the whole toWrapWithSemantics responds to pointer events, i.e. dragging
